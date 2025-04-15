@@ -38,11 +38,11 @@ ros2 launch jambot jambotstart.py
 ## Supported Serial Commands (Arduino Nano)
 | Command | Format              | Description                    |
 |:---------|:--------------------|:---------------------------------|
-| M       | `M <pwm1> <pwm2>`    | Set motor speeds               |
-| L       | `L W/G B`            | Set RGB LED state              |
-| N       | `N <soundType>`      | Play buzzer tone (1-3)         |
-| E       | `E`                  | Query encoder counts           |
-| I       | `I`                  | Query IMU data                 |
-| B       | `B`                  | Query battery voltage          |
-| R       | `R`                  | Reset encoder counts           |
-| P       | `P <Kp> <Ki> <Kd>`   | Update PID values live         |
+| M       | `m <m1> <m2>`        | Set motor speeds in rad/s       |
+| L       | `l W/G B`            | Set RGB LED state              |
+| N       | `n <soundType>`      | Play buzzer tone (1-10)        |
+| E       | `e`                  | Query encoder counts           |
+| I       | `i`                  | Query IMU data                 |
+| B       | `b`                  | Query battery voltage          |
+| R       | `r`                  | Reset encoder counts           |
+| P       | `p <Kp> <Ki> <Kd>`   | Update PID values live         |
