@@ -48,6 +48,7 @@ A master guide for AI-assisted ROS 2 coding projects to maintain consistency, cl
   - Interface changes
   - Launch file updates
   - Dependency additions
+  - Do not Delete anything, only add to the file
 - Log every AI suggestion, outcome (accepted/rejected/modified), and reasoning.
 
 ---

@@ -23,7 +23,9 @@ sudo apt install -y \
   ros-jazzy-serial-driver \
   libserial-dev \
   libserialport-dev \
-  python3-serial
+  python3-serial \
+  ros-jazzy-hardware-interface \
+  ros-jazzy-ros2-control
 ```
 
 ## Build & Run
@@ -34,6 +36,14 @@ colcon build --symlink-install
 source install/local_setup.bash
 ros2 launch jambot jambotstart.py
 ```
+
+## Hardware Interface
+The hardware interface node provides:
+- Serial communication with Arduino Nano
+- Motor control and encoder feedback
+- Error handling and retry mechanisms
+- Hardware status monitoring
+- Watchdog timer for safety
 
 ## Supported Serial Commands (Arduino Nano)
 | Command | Format              | Description                    |
@@ -46,3 +56,12 @@ ros2 launch jambot jambotstart.py
 | B       | `b`                  | Query battery voltage          |
 | R       | `r`                  | Reset encoder counts           |
 | P       | `p <Kp> <Ki> <Kd>`   | Update PID values live         |
+| S       | `s`                  | Get hardware status            |
+
+## Error Handling
+The hardware interface includes:
+- Serial communication timeout handling
+- Motor command validation
+- Encoder reading error recovery
+- Hardware status monitoring
+- Watchdog timer implementation

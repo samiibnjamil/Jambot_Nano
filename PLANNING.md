@@ -2,6 +2,10 @@
 
 ## Core Nodes
 - hardware_interface
+  - Serial communication with Arduino Nano
+  - Motor control and encoder feedback
+  - Error handling and retry mechanisms
+  - Watchdog timer implementation
 - lidar_pointcloud_publisher
 - camera_detection_node
 - ai_chat_assistant
@@ -20,6 +24,8 @@
 - /camera/image_raw
 - /lego_detection
 - /dock_status
+- /hardware_status (new)
+- /motor_commands (new)
 
 ## Services
 - /set_led_state
@@ -27,6 +33,8 @@
 - /update_pid
 - /start_docking
 - /get_ai_response
+- /reset_hardware (new)
+- /get_hardware_status (new)
 
 ## Actions
 - /navigate_to_point
@@ -43,6 +51,14 @@
 | I        | `I`                  | IMU data                        |
 | B        | `B`                  | Battery voltage                 |
 | R        | `R`                  | Reset encoders                  |
+| S        | `S`                  | Get hardware status             |
+
+## Error Handling
+- Serial communication timeout handling
+- Motor command validation
+- Encoder reading error recovery
+- Hardware status monitoring
+- Watchdog timer implementation
 
 ## URDF Frames
 - base_link

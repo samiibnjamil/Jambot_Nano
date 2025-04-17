@@ -5,8 +5,11 @@
 [x] MPU-6050 IMU
 
 ## ⚙️ Control
-[ ] Finalize ros2_control hardware_interface
+[x] Finalize ros2_control hardware_interface
 [ ] Peripheral service node for buzzer, LED, PID tuning
+[ ] Add error handling and retry mechanism for serial communication
+[ ] Implement watchdog timer for hardware interface
+[ ] Add proper command validation for motor values
 
 ## 🏗️ Chassis
 [ ] Redesign chassis for LiDAR, Camera, Display, Dock contacts, wiring
@@ -50,3 +53,5 @@
 [ ] AI Assistant CLI test
 [ ] LEGO detection demo test
 [ ] Docking navigation demo
+[ ] Hardware interface unit tests
+[ ] Serial communication stress tests
