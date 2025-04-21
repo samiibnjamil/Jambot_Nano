@@ -12,7 +12,7 @@ public:
                            current_angular_speed_(0.5) // Default angular speed scale
     {
         // Create a publisher for /cmd_vel
-        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
+        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/jambot_base_controller/cmd_vel", 10);
 
         // Create a subscriber for /joy topic (joystick input)
         subscription_ = this->create_subscription<sensor_msgs::msg::Joy>(
