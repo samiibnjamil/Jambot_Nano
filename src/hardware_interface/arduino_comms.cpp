@@ -43,7 +43,9 @@ void ArduinoComms::connect(const std::string &serial_device, int32_t baud_rate, 
     for (int i = 0; i <= 10; ++i) {
       std::string usb_port = "/dev/ttyUSB" + std::to_string(i);
       try {
-        serial_conn_.Open(usb_port);
+        //serial_conn_.Open(usb_port);
+        serial_conn_.Open("/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0");
+
         std::cout << "Connected to " << usb_port << std::endl;
         break;
       } catch (const LibSerial::OpenFailed &) {
