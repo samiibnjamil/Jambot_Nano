@@ -45,6 +45,7 @@ def generate_launch_description():
         [FindPackageShare("jambot_nano"), "rviz", "jambot.rviz"]
     )
 
+
     control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",

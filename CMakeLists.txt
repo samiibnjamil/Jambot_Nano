@@ -14,12 +14,16 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   nav_msgs
   hardware_interface
   controller_manager
+  rclcpp_lifecycle
+  pluginlib
 )
 
+# find dependencies
 find_package(ament_cmake REQUIRED)
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
+
 
 ## COMPILE
 add_library(
@@ -39,30 +43,31 @@ ament_target_dependencies(
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 
-# target_link_libraries(jambot_nano PUBLIC ...) # Add if you have extra libraries
+target_link_libraries(jambot_nano PUBLIC serial)
+
+
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "JAMBOT_NANO_BUILDING_DLL")
 
-# Export hardware plugins if you have a plugin description file
-# pluginlib_export_plugin_description_file(hardware_interface jambot_nano.xml)
+# Export hardware plugins
+pluginlib_export_plugin_description_file(hardware_interface jambot_nano.xml)
 
 # INSTALL
 install(
   DIRECTORY include/
   DESTINATION include/jambot_nano
 )
+
 install(
-  DIRECTORY launch/
+  DIRECTORY launch config urdf rviz
   DESTINATION share/jambot_nano
 )
+
 install(
-  DIRECTORY config/
-  DESTINATION share/jambot_nano
+  FILES jambot_nano.xml
+  DESTINATION share/${PROJECT_NAME}
 )
-install(
-  DIRECTORY urdf/
-  DESTINATION share/jambot_nano/urdf
-)
+
 install(TARGETS jambot_nano
   EXPORT export_jambot_nano
   ARCHIVE DESTINATION lib
