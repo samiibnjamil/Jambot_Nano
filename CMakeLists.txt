@@ -45,7 +45,16 @@ ament_target_dependencies(
 
 target_link_libraries(jambot_nano PUBLIC serial)
 
-
+# Add controller node executable
+add_executable(controller_node src/controller_node.cpp)
+target_include_directories(controller_node PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(controller_node
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE "JAMBOT_NANO_BUILDING_DLL")
 
@@ -74,6 +83,10 @@ install(TARGETS jambot_nano
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+# Install controller node
+install(TARGETS controller_node
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
