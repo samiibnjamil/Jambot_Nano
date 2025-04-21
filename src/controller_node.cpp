@@ -9,7 +9,7 @@ class TriggerControlNode : public rclcpp::Node
 public:
     TriggerControlNode() : Node("trigger_control_node"),
                            current_linear_speed_(0.5), // Default linear speed scale
-                           current_angular_speed_(0.8) // Default angular speed scale
+                           current_angular_speed_(1.5) // Default angular speed scale
     {
         // Create a publisher for /diffbot_base_controller/cmd_vel
         publisher_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/jambot_base_controller/cmd_vel", 10);
