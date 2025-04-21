@@ -1,6 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
-#include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/twist_stamped.hpp" // Use TwistStamped
 #include <vector>
 #include <string>
 
@@ -9,17 +9,17 @@ class TriggerControlNode : public rclcpp::Node
 public:
     TriggerControlNode() : Node("trigger_control_node"),
                            current_linear_speed_(0.5), // Default linear speed scale
-                           current_angular_speed_(0.5) // Default angular speed scale
+                           current_angular_speed_(0.8) // Default angular speed scale
     {
-        // Create a publisher for /cmd_vel
-        publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/jambot_base_controller/cmd_vel", 10);
+        // Create a publisher for /diffbot_base_controller/cmd_vel
+        publisher_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/jambot_base_controller/cmd_vel", 10);
 
         // Create a subscriber for /joy topic (joystick input)
         subscription_ = this->create_subscription<sensor_msgs::msg::Joy>(
             "/joy", 10, std::bind(&TriggerControlNode::joy_callback, this, std::placeholders::_1));
 
-        // Initialize Twist message
-        twist_ = geometry_msgs::msg::Twist();
+        // Initialize TwistStamped message
+        twist_stamped_ = geometry_msgs::msg::TwistStamped();
     }
 
 private:
@@ -43,7 +43,7 @@ private:
         if (dpad_vertical > 0.0) // D-Pad up
         {
             current_linear_speed_ += 0.05;
-            current_linear_speed_ = std::min(current_linear_speed_, 2.0f); // Clamp to max 2.0
+            current_linear_speed_ = std::min(current_linear_speed_, 1.0f); // Clamp to max 1.0
             RCLCPP_INFO(this->get_logger(), "Increased linear speed scale: %.2f", current_linear_speed_);
         }
         else if (dpad_vertical < 0.0) // D-Pad down
@@ -56,37 +56,41 @@ private:
         // Adjust angular speed scale with D-Pad horizontal
         if (dpad_horizontal > 0.0) // D-Pad right
         {
-            current_angular_speed_ += 0.05;
-            current_angular_speed_ = std::min(current_angular_speed_, 2.0f); // Clamp to max 2.0
+            current_angular_speed_ -= 0.05;
+            current_angular_speed_ = std::min(current_angular_speed_, 1.0f); // Clamp to max 1.0
             RCLCPP_INFO(this->get_logger(), "Increased angular speed scale: %.2f", current_angular_speed_);
         }
         else if (dpad_horizontal < 0.0) // D-Pad left
         {
-            current_angular_speed_ -= 0.05;
+            current_angular_speed_ += 0.05;
             current_angular_speed_ = std::max(current_angular_speed_, 0.1f); // Clamp to min 0.1
             RCLCPP_INFO(this->get_logger(), "Decreased angular speed scale: %.2f", current_angular_speed_);
         }
 
         // Map right trigger (R2) to forward speed (0 to 1 range)
         float right_trigger = msg->axes[5]; // Right trigger
-        twist_.linear.x = current_linear_speed_ * right_trigger;
+        twist_stamped_.twist.linear.x = current_linear_speed_ * right_trigger;
 
         // Map left trigger (L2) to reverse speed (0 to -1 range)
         float left_trigger = msg->axes[4]; // Left trigger
-        twist_.linear.x += current_linear_speed_ * (-left_trigger);
+        twist_stamped_.twist.linear.x += current_linear_speed_ * (-left_trigger);
 
         // Use left joystick (horizontal axis) for turning
-        twist_.angular.z = current_angular_speed_ * msg->axes[0]; // Left joystick horizontal axis
+        twist_stamped_.twist.angular.z = current_angular_speed_ * msg->axes[0]; // Left joystick horizontal axis
 
-        // Publish the updated Twist message
-        publisher_->publish(twist_);
+        // Set the header with the current time
+        twist_stamped_.header.stamp = this->get_clock()->now();
+        twist_stamped_.header.frame_id = "base_link"; // Optional: Set frame_id
+
+        // Publish the updated TwistStamped message to /diffbot_base_controller/cmd_vel
+        publisher_->publish(twist_stamped_);
     }
 
-    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr publisher_;
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr subscription_;
-    geometry_msgs::msg::Twist twist_;
+    geometry_msgs::msg::TwistStamped twist_stamped_;
 
-    float current_linear_speed_; // Current linear speed scale
+    float current_linear_speed_;  // Current linear speed scale
     float current_angular_speed_; // Current angular speed scale
 };
 
@@ -96,4 +100,4 @@ int main(int argc, char **argv)
     rclcpp::spin(std::make_shared<TriggerControlNode>());
     rclcpp::shutdown();
     return 0;
-} 
+}
