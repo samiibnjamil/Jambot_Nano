@@ -160,13 +160,13 @@
   <joint name="${prefix}camera_joint" type="fixed">
     <parent link="${prefix}chassis"/>
     <child link="${prefix}camera_link"/>
-    <origin xyz="0.14 0 0.05" rpy="0 0 0"/>
+    <origin xyz="${chassis_length} 0 ${chassis_height/2}" rpy="0 0 0"/>
   </joint>
 
   <link name="${prefix}camera_link">
     <visual>
       <geometry>
-        <box size="0.010 0.03 0.03"/>
+        <box size="0.03 0.03 0.03"/>
       </geometry>
       <material name="black"/>
     </visual>
