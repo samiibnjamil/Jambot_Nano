@@ -38,20 +38,19 @@ void ArduinoComms::connect(const std::string &serial_device, int32_t baud_rate, 
   try {
     serial_conn_.Open(serial_device);
   } catch (const LibSerial::OpenFailed &) {
-    std::cerr << "Failed to open " << serial_device << ". Trying USB ports..." << std::endl;
-    
-    for (int i = 0; i <= 10; ++i) {
-      std::string usb_port = "/dev/ttyUSB" + std::to_string(i);
-      try {
-        //serial_conn_.Open(usb_port);
-        serial_conn_.Open("/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0");
-
-        std::cout << "Connected to " << usb_port << std::endl;
-        break;
-      } catch (const LibSerial::OpenFailed &) {
-        std::cerr << "Failed to open " << usb_port << ". Trying next port..." << std::endl;
+      std::cerr << "Failed to open Arduino at known path. Trying USB ports..." << std::endl;
+      
+      // Fall back to trying USB ports
+      for (int i = 0; i <= 10; ++i) {
+        std::string usb_port = "/dev/ttyUSB" + std::to_string(i);
+        try {
+          serial_conn_.Open(usb_port);
+          std::cout << "Connected to " << usb_port << std::endl;
+          break;
+        } catch (const LibSerial::OpenFailed &) {
+          std::cerr << "Failed to open " << usb_port << ". Trying next port..." << std::endl;
+        }
       }
-    }
   }
   serial_conn_.SetBaudRate(convert_baud_rate(baud_rate));
 }
